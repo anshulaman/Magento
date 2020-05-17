@@ -1,0 +1,75 @@
+<?php
+/**
+ * @var $block 
+ */
+?>
+<div class="admin__page-section-title">
+    <span class="title"><?php /* @escapeNotVerified */
+        echo __('Update Status') ?></span>
+</div>
+<?php
+    $status = $block->getUpdatedStatus();
+    $incrementid = $block->getOrderIncrementId();
+    $incrementarray =array($incrementid);
+?>
+<div class="admin__page-section-item-content">
+	<strong>Update Status:</strong>
+</div>
+<br/>
+<select name='order_items[status][]' class='admin__control-select required-entry' id = "updatedstatus">
+	<option value="0">Please select a status</option>
+ 	<?php foreach($status as $option):?>
+        <option value="<?php echo $option['value'] ?>"><?php echo $option['label'] ?></option>
+	<?php endforeach; ?>
+</select>
+<br/>
+<br/>
+<select name='order_items[increment_id][]' class='admin__control-select required-entry' id = "updatedincrementid">
+	<option value="0">Please select a increment id</option>
+ 	<?php foreach($incrementarray as $option):?>
+        <option value="<?php echo $option ?>"><?php echo $option ?></option>
+	<?php endforeach; ?>
+</select>
+
+<input type="hidden" id="order_increment_id" value="<?php echo $block->getOrderIncrementId();?>">
+<input type="hidden" id="order_id" value="<?php echo $block->getOrderId();?>">
+<br/>
+<br/>
+<button id="submit_comment_button" title="Update Status" type="submit" class="action-default scalable action-secondary save" data-ui-id="order-comments-submit-button">
+    <span>Update Status</span>
+</button>
+<br/>
+<br/>
+<div id = "info"></div>
+<br/>
+<div id = "test" style="color: red;"></div>
+<script>// <![CDATA[
+    require([
+        'jquery'
+    ], function ($) {
+        $(document).ready(function(){
+        	// loadData();
+        });
+
+        $('#submit_comment_button').click(function(){
+        	$.ajax({
+	            url: '<?php echo $this->getUrl('updatestatus/*/updatedstatus'); ?>',
+	            type: 'POST',
+	            dataType: 'text',
+	            'data': {'status': $('#updatedstatus :selected').text(),
+	            		 'incrementid': $('#updatedincrementid :selected').text(),
+	            		 'order_increment_id' :$('#order_increment_id').val(),
+	            		 'order_id' :$('#order_id').val(),
+	            		},
+	            showLoader: true //use for display loader
+	        }).done(function (data) {
+	        	if(data == 1){
+	        		// loadData();
+	        	}else if(data.charAt(0) == '<'){
+	        		$("div#info").html(data);
+	        	}
+	        });
+        }); 
+    });
+    // ]]>
+</script>
